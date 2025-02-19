@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crediboost MT5 Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #5B2C6F, #9B59B6);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #8E44AD;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #732D91;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Welcome to the Crediboost MT5 Portal </h1>
+        
+        <h3>Login to Manage Your Subscription</h3>
+        <input type="text" id="mt5_login" placeholder="MT5 Login Number">
+        <input type="password" id="mt5_password" placeholder="MT5 Password">
+        
+        <h3>Enter Your API Key</h3>
+        <input type="text" id="api_key" placeholder="Enter Your API Key">
+        
+        <h3>Select Your Trading Server</h3>
+        <select id="server_list">
+            <option value="">-- Select Your Broker Server --</option>
+            <option value="broker1">Broker 1</option>
+            <option value="broker2">Broker 2</option>
+            <option value="broker3">Broker 3</option>
+        </select>
+        
+        <button onclick="submitDetails()">Submit</button>
+        <button onclick="cancelSubscription()" style="background-color: red;">Cancel Subscription</button>
+    </div>
+
+    <script>
+        function submitDetails() {
+            alert("Details submitted successfully!");
+        }
+        function cancelSubscription() {
+            alert("Subscription cancellation request submitted.");
+        }
+    </script>
+</body>
+</html>
