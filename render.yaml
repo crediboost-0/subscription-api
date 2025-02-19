@@ -1,0 +1,10 @@
+services:
+  - name: subscription-api
+    type: web
+    env: python
+    plan: starter  # Change to 'pro' if you need more resources
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PORT
+        value: 10000
