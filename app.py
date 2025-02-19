@@ -1,22 +1,20 @@
-from flask import Flask, request, jsonify
+import os
+from flask import Flask
 
 app = Flask(__name__)
 
-# Mock database (replace with real DB later)
-subscriptions = {
-    "user1_api_key": {"status": "active"},
-    "user2_api_key": {"status": "inactive"}
-}
+# Home route to check if the app is working
+@app.route('/')
+def home():
+    return "API is running!"
 
-@app.route('/check-subscription', methods=['POST'])
-def check_subscription():
-    data = request.json
-    api_key = data.get("api_key")
+# Additional API endpoint to test with
+@app.route('/test')
+def test():
+    return "Test API endpoint working!"
 
-    if api_key in subscriptions and subscriptions[api_key]["status"] == "active":
-        return jsonify({"access": "granted"}), 200
-    else:
-        return jsonify({"access": "denied"}), 403
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# Main entry point for the Flask app
+if __name__ == "__main__":
+    # Ensuring it binds to the right port that Render expects
+    port = int(os.environ.get("PORT", 10000))  # Use Render's default port
+    app.run(host="0.0.0.0", port=port)
