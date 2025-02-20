@@ -1,27 +1,54 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate  # Added Flask-Migrate
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import db, User
+from config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
+db.init_app(app)
 
-# Database configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# -------------------- USER REGISTRATION --------------------
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
 
-# Initialize database
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)  # Added migration setup
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
 
-# Homepage Route
-@app.route("/")
-def home():
-    return render_template("index.html")
+    # Hash the password before storing it
+    hashed_password = generate_password_hash(password)
 
-# Run the Flask app
-if __name__ == "__main__":
-    app.run(debug=True)
+    user = User(email=email, password_hash=hashed_password)
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({"message": "User registered successfully", "api_key": user.api_key}), 201
+
+# -------------------- USER LOGIN --------------------
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if not user or not check_password_hash(user.password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    return jsonify({"message": "Login successful", "api_key": user.api_key}), 200
+
+# -------------------- FETCH API KEY --------------------
+@app.route("/get-api-key", methods=["POST"])
+def get_api_key():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if not user or not check_password_hash(user.password_hash, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    return jsonify({"api_key": user.api_key}), 200
