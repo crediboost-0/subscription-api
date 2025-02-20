@@ -1,45 +1,90 @@
 from flask import Flask, render_template, request, jsonify
+from datetime import datetime, timedelta
+import uuid
+import bcrypt
+from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-here'  # Replace with actual secret key
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-# Route for the web portal UI
+# Initialize security extensions
+csrf = CSRFProtect(app)
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
+
+# Temporary credential storage (Replace with database in production)
+credentials_store = {}
+
+# Security configurations
+API_KEY_LENGTH = 32
+PEPPER = b'your-pepper-string'  # Add random pepper value
+COST_FACTOR = 12  # BCrypt cost factor
+
+def secure_hash(password: str) -> str:
+    """Securely hash passwords with pepper and bcrypt"""
+    peppered = password.encode() + PEPPER
+    return bcrypt.hashpw(peppered, bcrypt.gensalt(COST_FACTOR)).decode()
+
 @app.route('/')
+@limiter.exempt
 def index():
     return render_template('index.html')
 
-# API route to handle subscription cancellation
-@app.route('/cancel_subscription', methods=['POST'])
-def cancel_subscription():
-    data = request.json
-    user_id = data.get('user_id')
-
-    if not user_id:
-        return jsonify({"error": "User ID is required"}), 400
-
-    # Placeholder logic for canceling subscription (replace with actual implementation)
-    success = True  # Change based on real cancellation logic
-
-    if success:
-        return jsonify({"message": "Subscription canceled successfully"})
-    else:
-        return jsonify({"error": "Failed to cancel subscription"}), 500
-
-# API route to handle user login details submission
 @app.route('/submit_credentials', methods=['POST'])
+@limiter.limit("5/minute")  # Rate limiting
+@csrf.exempt  # Only if using API without frontend CSRF
 def submit_credentials():
-    data = request.json
-    mt5_login = data.get('mt5_login')
-    mt5_password = data.get('mt5_password')
-    server_name = data.get('server_name')
-    api_key = data.get('api_key')
+    try:
+        # Validate content type
+        if not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 415
 
-    if not all([mt5_login, mt5_password, server_name, api_key]):
-        return jsonify({"error": "All fields are required"}), 400
+        data = request.get_json()
+        
+        # Validate all fields
+        required_fields = ['mt5_login', 'mt5_password', 'server_name', 'api_key']
+        if not all(field in data for field in required_fields):
+            return jsonify({"error": "Missing required fields"}), 400
 
-    # Placeholder logic to store credentials (Replace with actual implementation)
-    print(f"Received login: {mt5_login}, Server: {server_name}, API Key: {api_key}")
-    
-    return jsonify({"message": "Credentials submitted successfully"}), 200
+        # Validate field formats
+        if not data['mt5_login'].isdigit():
+            return jsonify({"error": "MT5 login must be numeric"}), 400
+
+        if data['server_name'] not in {'Broker1', 'Broker2', 'Broker3'}:
+            return jsonify({"error": "Invalid server selection"}), 400
+
+        if len(data['api_key']) != API_KEY_LENGTH:
+            return jsonify({"error": "Invalid API key format"}), 400
+
+        # Secure credential storage
+        credential_id = str(uuid.uuid4())
+        hashed_pw = secure_hash(data['mt5_password'])
+        
+        credentials_store[credential_id] = {
+            'login': data['mt5_login'],
+            'server': data['server_name'],
+            'api_key': data['api_key'],
+            'password_hash': hashed_pw,
+            'timestamp': datetime.now().isoformat(),
+            'expires': (datetime.now() + timedelta(minutes=15)).isoformat()  # Temp storage
+        }
+
+        return jsonify({
+            "message": "Credentials received securely",
+            "credential_id": credential_id,
+            "expires_at": credentials_store[credential_id]['expires']
+        }), 200
+
+    except Exception as e:
+        app.logger.error(f"Credential submission error: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(ssl_context='adhoc')  # Remove in production
