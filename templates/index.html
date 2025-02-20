@@ -5,120 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crediboost MT5 Portal</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: relative;
-            min-height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(320deg, #0a0e17, #1a1f2c, #2d3447);
-            background-size: 400% 400%;
-            animation: GradientAnimation 20s ease infinite;
-        }
-
-        @keyframes GradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            right: -50%;
-            bottom: -50%;
-            background: 
-                radial-gradient(circle at 70% 30%, rgba(255,255,255,0.05) 0%, transparent 50%),
-                radial-gradient(circle at 30% 70%, rgba(255,255,255,0.05) 0%, transparent 50%);
-            animation: ParticleMovement 20s linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes ParticleMovement {
-            0% { transform: translate(0,0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: rgba(16, 22, 34, 0.6);
-            border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            background: rgba(255, 255, 255, 0.15);
-            outline: 1px solid rgba(255, 152, 0, 0.3);
-        }
-
-        button {
-            background: linear-gradient(135deg, #ff9800, #ff6b00);
-            padding: 14px;
-            font-weight: bold;
-            margin-top: 1rem;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
-        }
-
-        h1, h3 {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            margin-bottom: 1.5rem;
-        }
-
-        #cancelSubscription {
-            background: linear-gradient(135deg, #ff4444, #cc0000);
-            margin-top: 2rem;
-        }
-    </style>
 </head>
 <body>
-    <h1>Welcome to the Crediboost MT5 Portal</h1>
-    
     <div class="container">
-        <h3>Enter Your MT5 Credentials</h3>
+        <h1> Welcome to the Crediboost MT5 Portal </h1>
         <form id="credentialsForm">
-            <input type="text" id="mt5_login" placeholder="MT5 Login Number" required>
-            <input type="password" id="mt5_password" placeholder="Password" required>
-            <select id="server_name">
-                <option value="">Select Your Broker Server</option>
+            <select id="server_name" required>
+                <option value="" disabled selected>Select Your Broker Server</option>
                 <option value="Broker1">Broker1</option>
                 <option value="Broker2">Broker2</option>
                 <option value="Broker3">Broker3</option>
             </select>
+            <input type="text" id="mt5_login" placeholder="MT5 Login Number" required>
+            <input type="password" id="mt5_password" placeholder="Password" required>
             <input type="text" id="api_key" placeholder="Your API Key" required>
-            <button type="submit">Connect Account</button>
+            <button type="submit">Submit</button>
         </form>
-        
-        <h3>Manage Subscription</h3>
-        <button id="cancelSubscription">Cancel Subscription</button>
     </div>
-
     <script>
-        // Keep your existing JavaScript unchanged
         document.getElementById("credentialsForm").addEventListener("submit", function(event) {
             event.preventDefault();
             let data = {
@@ -136,21 +40,6 @@
             .then(response => response.json())
             .then(data => alert(data.message || data.error))
             .catch(error => alert("Error submitting data."));
-        });
-
-        document.getElementById("cancelSubscription").addEventListener("click", function() {
-            let user_id = prompt("Enter your user ID to cancel:");
-
-            if (user_id) {
-                fetch("/cancel_subscription", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({ user_id: user_id })
-                })
-                .then(response => response.json())
-                .then(data => alert(data.message || data.error))
-                .catch(error => alert("Error canceling subscription."));
-            }
         });
     </script>
 </body>
