@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime, timedelta
 import uuid
-import bcrypt
+import hashlib
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -24,13 +24,12 @@ credentials_store = {}
 
 # Security configurations
 API_KEY_LENGTH = 32
-PEPPER = b'your-pepper-string'  # Add random pepper value
-COST_FACTOR = 12  # BCrypt cost factor
+PEPPER = 'your-pepper-string'  # Add random pepper value
 
 def secure_hash(password: str) -> str:
-    """Securely hash passwords with pepper and bcrypt"""
-    peppered = password.encode() + PEPPER
-    return bcrypt.hashpw(peppered, bcrypt.gensalt(COST_FACTOR)).decode()
+    """Securely hash passwords with pepper and SHA-256"""
+    peppered = password + PEPPER
+    return hashlib.sha256(peppered.encode()).hexdigest()
 
 @app.route('/')
 @limiter.exempt
