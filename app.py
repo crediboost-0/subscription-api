@@ -1,28 +1,27 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from config import Config  # Import configuration settings
+from flask_migrate import Migrate  # Added Flask-Migrate
+import os
+from dotenv import load_dotenv
 
-# Initialize Flask app
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
-app.config.from_object(Config)  # Load configuration
+
+# Database configuration
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize database
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)  # Added migration setup
 
-# Homepage route
-@app.route('/')
+# Homepage Route
+@app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
-# API route to test database connection
-@app.route('/test_db')
-def test_db():
-    try:
-        db.session.execute('SELECT 1')  # Simple test query
-        return jsonify({"message": "Database connected successfully!"})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Run the application
-if __name__ == '__main__':
+# Run the Flask app
+if __name__ == "__main__":
     app.run(debug=True)
