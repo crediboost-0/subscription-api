@@ -11,8 +11,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)  # Correctly initialize SQLAlchemy
 
-@app.before_first_request
-def create_tables():
+# Ensure tables are created at startup
+with app.app_context():
     db.create_all()
 
 @app.route('/shopify-webhook', methods=['POST'])
