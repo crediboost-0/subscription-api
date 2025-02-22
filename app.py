@@ -62,6 +62,17 @@ def shopify_webhook():
             return jsonify({"error": "Customer not found"}), 404
 
     return jsonify({"error": "Unknown event"}), 400
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    if not data or 'email' not in data or 'api_key' not in data:
+        return jsonify({"error": "Email and API key required"}), 400
+
+    user = User.query.filter_by(email=data['email']).first()
+    if not user or user.api_key != data['api_key']:
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    return jsonify({"message": "Login successful", "user": {"email": user.email, "api_key": user.api_key}}), 200
 
 # Add a test route to verify if Flask is running
 @app.route('/test')
@@ -70,3 +81,4 @@ def test():
 
 if __name__ == '__main__':
     app.run(debug=True)
+   
