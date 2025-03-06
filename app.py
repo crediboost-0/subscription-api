@@ -62,6 +62,7 @@ def shopify_webhook():
             return jsonify({"error": "Customer not found"}), 404
 
     return jsonify({"error": "Unknown event"}), 400
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -79,6 +80,18 @@ def login():
 def test():
     return "Flask is running!"
 
+# Route to retrieve API key by email
+@app.route('/api/get_api_key', methods=['GET'])
+def get_api_key():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({"email": email, "api_key": user.api_key})
+
 if __name__ == '__main__':
-    app.run(debug=True)
-   
+    app.run(host='0.0.0.0', port=5000, debug=True)
