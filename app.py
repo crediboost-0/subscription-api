@@ -1,6 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import os
 import secrets
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User  # Import database and User model
 
 app = Flask(__name__)
@@ -8,6 +10,7 @@ app = Flask(__name__)
 # Ensure the correct database connection
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # Add a secret key for sessions
 
 db.init_app(app)  # Correctly initialize SQLAlchemy
 
@@ -15,21 +18,81 @@ db.init_app(app)  # Correctly initialize SQLAlchemy
 with app.app_context():
     db.create_all()
 
+# Flask-Login setup
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        hashed_password = generate_password_hash(password, method='sha256')
+
+        new_user = User(email=email, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('home'))
+        else:
+            return "Invalid credentials"
+
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+@app.route('/home', methods=['GET', 'POST'])
+@login_required
+def home():
+    if request.method == 'POST':
+        # Collect MetaTrader 5 login details and save them
+        mt5_login = request.form['mt5_login']
+        mt5_password = request.form['mt5_password']
+        api_key = secrets.token_hex(16)  # Generate a new API key
+
+        current_user.mt5_login = mt5_login
+        current_user.mt5_password = mt5_password
+        current_user.api_key = api_key
+        db.session.commit()
+
+        return redirect(url_for('home'))
+
+    return render_template('home.html')
+
 @app.route('/shopify-webhook', methods=['POST'])
 def shopify_webhook():
     """Handle Shopify webhook for customer creation and updates."""
     data = request.get_json()
-
     if not data:
         return jsonify({"error": "Invalid data"}), 400
 
     # Extract webhook topic from headers
     webhook_topic = request.headers.get('X-Shopify-Topic', '')
-
     # Extract customer details from the payload
     customer_data = data.get('customer', {})
     email = customer_data.get('email', '')
-
     if not email:
         return jsonify({"error": "No customer email provided"}), 400
 
@@ -63,24 +126,6 @@ def shopify_webhook():
 
     return jsonify({"error": "Unknown event"}), 400
 
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    if not data or 'email' not in data or 'api_key' not in data:
-        return jsonify({"error": "Email and API key required"}), 400
-
-    user = User.query.filter_by(email=data['email']).first()
-    if not user or user.api_key != data['api_key']:
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    return jsonify({"message": "Login successful", "user": {"email": user.email, "api_key": user.api_key}}), 200
-
-# Add a test route to verify if Flask is running
-@app.route('/test')
-def test():
-    return "Flask is running!"
-
-# Route to retrieve API key by email
 @app.route('/api/get_api_key', methods=['GET'])
 def get_api_key():
     email = request.args.get('email')

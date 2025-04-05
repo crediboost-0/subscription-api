@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crediboost MT5 Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Crediboost MT5 Portal</h1>
+        <p>Welcome, {{ current_user.email }}! Here's where you can manage your MT5 credentials and deploy the bot.</p>
+        
+        <!-- MetaTrader 5 Login Form -->
+        <h3>Enter your MetaTrader 5 Login Details</h3>
+        <form method="POST">
+            <label for="mt5_login">MT5 Login:</label>
+            <input type="text" name="mt5_login" id="mt5_login" required><br>
+            
+            <label for="mt5_password">MT5 Password:</label>
+            <input type="password" name="mt5_password" id="mt5_password" required><br>
+
+            <button type="submit">Save MT5 Credentials</button>
+        </form>
+
+        <h3>Your Broker Server Selection</h3>
+        <form method="POST" action="/save-broker">
+            <label for="broker">Select Broker:</label>
+            <select name="broker" id="broker">
+                <option value="broker1">Broker 1</option>
+                <option value="broker2">Broker 2</option>
+                <option value="broker3">Broker 3</option>
+            </select>
+            <button type="submit">Save Broker</button>
+        </form>
+
+        <h3>Your API Key</h3>
+        <p>Your API key is: {{ current_user.api_key if current_user.api_key else "Not generated yet" }}</p>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</body>
+</html>
