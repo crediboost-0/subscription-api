@@ -6,3 +6,5 @@ Flask-SQLAlchemy
 python-dotenv
 Flask-Migrate
 flask-login
+--log pip-debug.log
+
