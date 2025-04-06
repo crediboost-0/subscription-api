@@ -4,7 +4,4 @@ psycopg2-binary
 Flask-SQLAlchemy
 python-dotenv
 Flask-Migrate
-flask-login
-
-
-
+flask-login 
