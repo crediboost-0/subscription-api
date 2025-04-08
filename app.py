@@ -67,13 +67,12 @@ def logout():
 @login_required
 def home():
     if request.method == 'POST':
-        # Collect MetaTrader 5 login details and save them
-        mt5_login = request.form['mt5_login']
-        mt5_password = request.form['mt5_password']
+        # Removed MetaTrader 5 related logic
+        # Instead of storing MT5 credentials, you can handle other configurations here
+        # For example, saving bot configurations or user preferences
+        bot_configuration = request.form['bot_configuration']
         api_key = secrets.token_hex(16)  # Generate a new API key
 
-        current_user.mt5_login = mt5_login
-        current_user.mt5_password = mt5_password
         current_user.api_key = api_key
         db.session.commit()
 
