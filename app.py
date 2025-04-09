@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import os
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -12,20 +11,21 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # Add a secret key for sessions
 
-db.init_app(app)  # Correctly initialize SQLAlchemy
+db.init_app(app)
 
 # Ensure tables are created at startup
 with app.app_context():
     db.create_all()
 
-# Flask-Login setup
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+# Custom login_required decorator
+from functools import wraps
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -50,7 +50,7 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
-            login_user(user)
+            session['user_id'] = user.id
             return redirect(url_for('home'))
         else:
             return "Invalid credentials"
@@ -60,20 +60,19 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
-    logout_user()
+    session.clear()
     return redirect(url_for('login'))
 
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
-    if request.method == 'POST':
-        # Removed MetaTrader 5 related logic
-        # Instead of storing MT5 credentials, you can handle other configurations here
-        # For example, saving bot configurations or user preferences
-        bot_configuration = request.form['bot_configuration']
-        api_key = secrets.token_hex(16)  # Generate a new API key
+    user = User.query.get(session['user_id'])
 
-        current_user.api_key = api_key
+    if request.method == 'POST':
+        bot_configuration = request.form['bot_configuration']
+        api_key = secrets.token_hex(16)
+
+        user.api_key = api_key
         db.session.commit()
 
         return redirect(url_for('home'))
@@ -87,9 +86,7 @@ def shopify_webhook():
     if not data:
         return jsonify({"error": "Invalid data"}), 400
 
-    # Extract webhook topic from headers
     webhook_topic = request.headers.get('X-Shopify-Topic', '')
-    # Extract customer details from the payload
     customer_data = data.get('customer', {})
     email = customer_data.get('email', '')
     if not email:
@@ -98,13 +95,12 @@ def shopify_webhook():
     user = User.query.filter_by(email=email).first()
 
     if webhook_topic == "customers/create":
-        # Handle new customer creation
         if not user:
             user = User(
                 email=email,
                 first_name=customer_data.get('first_name', ''),
                 last_name=customer_data.get('last_name', ''),
-                api_key=secrets.token_hex(16),  # Generate a new API key
+                api_key=secrets.token_hex(16),
                 is_active=True
             )
             db.session.add(user)
@@ -114,7 +110,6 @@ def shopify_webhook():
             return jsonify({"error": "Customer already exists"}), 400
 
     elif webhook_topic == "customers/update":
-        # Handle customer updates
         if user:
             user.first_name = customer_data.get('first_name', user.first_name)
             user.last_name = customer_data.get('last_name', user.last_name)
@@ -139,3 +134,4 @@ def get_api_key():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
