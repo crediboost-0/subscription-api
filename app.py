@@ -132,6 +132,26 @@ def get_api_key():
 
     return jsonify({"email": email, "api_key": user.api_key})
 
+@app.route('/api/validate_key', methods=['GET'])
+def validate_key():
+    api_key = request.args.get('api_key')
+
+    if not api_key:
+        return jsonify({"valid": False, "error": "API key is required"}), 400
+
+    user = User.query.filter_by(api_key=api_key).first()
+
+    if not user:
+        return jsonify({"valid": False, "error": "Invalid API key"}), 404
+
+    if not user.is_active:
+        return jsonify({"valid": False, "error": "Subscription inactive"}), 403
+
+    return jsonify({
+        "valid": True,
+        "email": user.email,
+        "bot_allowed": True
+    }), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
