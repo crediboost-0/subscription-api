@@ -2,28 +2,44 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 import os
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User  # Import database and User model
+from models import db, User
+from functools import wraps
 
 app = Flask(__name__)
 
-# Ensure the correct database connection
+# Configurations
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # Add a secret key for sessions
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 db.init_app(app)
 
-# Ensure tables are created at startup
+# Ensure tables are created
 with app.app_context():
     db.create_all()
 
-# Custom login_required decorator
-from functools import wraps
+# Login-required decorator
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# API key-required decorator
+def api_key_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        api_key = request.headers.get('X-API-Key')
+        if not api_key:
+            return jsonify({"error": "API key required"}), 401
+
+        user = User.query.filter_by(api_key=api_key).first()
+        if not user or not user.is_active:
+            return jsonify({"error": "Invalid or inactive API key"}), 403
+
+        request.user = user  # Attach user to request context
         return f(*args, **kwargs)
     return decorated_function
 
@@ -37,9 +53,8 @@ def register():
         new_user = User(email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-        
-        return redirect(url_for('login'))
 
+        return redirect(url_for('login'))
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -54,7 +69,6 @@ def login():
             return redirect(url_for('home'))
         else:
             return "Invalid credentials"
-
     return render_template('login.html')
 
 @app.route('/logout')
@@ -81,7 +95,6 @@ def home():
 
 @app.route('/shopify-webhook', methods=['POST'])
 def shopify_webhook():
-    """Handle Shopify webhook for customer creation and updates."""
     data = request.get_json()
     if not data:
         return jsonify({"error": "Invalid data"}), 400
@@ -135,12 +148,10 @@ def get_api_key():
 @app.route('/api/validate_key', methods=['GET'])
 def validate_key():
     api_key = request.args.get('api_key')
-
     if not api_key:
         return jsonify({"valid": False, "error": "API key is required"}), 400
 
     user = User.query.filter_by(api_key=api_key).first()
-
     if not user:
         return jsonify({"valid": False, "error": "Invalid API key"}), 404
 
@@ -151,6 +162,15 @@ def validate_key():
         "valid": True,
         "email": user.email,
         "bot_allowed": True
+    }), 200
+
+# ? Example protected endpoint
+@app.route('/api/protected-bot-action', methods=['POST'])
+@api_key_required
+def protected_bot_action():
+    user = request.user
+    return jsonify({
+        "message": f"Hello {user.email}, your API key is valid. Bot action allowed."
     }), 200
 
 if __name__ == '__main__':
