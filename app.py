@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+﻿from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import os
 import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -164,7 +164,7 @@ def validate_key():
         "bot_allowed": True
     }), 200
 
-# ? Example protected endpoint
+# ✅ Example protected endpoint
 @app.route('/api/protected-bot-action', methods=['POST'])
 @api_key_required
 def protected_bot_action():
