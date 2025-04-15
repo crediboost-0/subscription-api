@@ -18,7 +18,8 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# Login-required decorator
+# -------------------- AUTH DECORATORS --------------------
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -27,7 +28,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# API key-required decorator
 def api_key_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -43,6 +43,12 @@ def api_key_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# -------------------- ROUTES --------------------
+
+@app.route('/')
+def index():
+    return redirect(url_for('portal'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -53,7 +59,6 @@ def register():
         new_user = User(email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-
         return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -66,7 +71,7 @@ def login():
 
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
-            return redirect(url_for('portal'))  # Redirect to /portal after login
+            return redirect(url_for('portal'))
         else:
             return "Invalid credentials"
     return render_template('login.html')
@@ -77,43 +82,29 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/home', methods=['GET', 'POST'])  # Legacy route, optional to keep
-@login_required
-def home():
-    user = User.query.get(session['user_id'])
-
-    if request.method == 'POST':
-        bot_configuration = request.form['bot_configuration']
-        api_key = secrets.token_hex(16)
-
-        user.api_key = api_key
-        db.session.commit()
-
-        return redirect(url_for('portal'))
-
-    return render_template('home.html', user=user)
-
-# ✅ NEW: Route for /portal (public-facing dashboard)
 @app.route('/portal', methods=['GET', 'POST'])
 @login_required
 def portal():
     user = User.query.get(session['user_id'])
 
     if request.method == 'POST':
-        bot_configuration = request.form['bot_configuration']
+        mt5_login = request.form.get('mt5_login')
+        mt5_password = request.form.get('mt5_password')
+        broker_server = request.form.get('broker')
+        bot_configuration = request.form.get('bot_configuration')
+
         api_key = secrets.token_hex(16)
 
+        user.mt5_login = mt5_login
+        user.mt5_password = mt5_password
+        user.broker = broker_server
+        user.bot_config = bot_configuration
         user.api_key = api_key
         db.session.commit()
 
         return redirect(url_for('portal'))
 
     return render_template('home.html', user=user)
-
-# ✅ Optional: Redirect / to /portal
-@app.route('/')
-def index():
-    return redirect(url_for('portal'))
 
 @app.route('/shopify-webhook', methods=['POST'])
 def shopify_webhook():
@@ -140,6 +131,10 @@ def shopify_webhook():
             )
             db.session.add(user)
             db.session.commit()
+
+            # Optional: Send welcome email here if not already wired
+            # send_welcome_email_with_pdf(user.email, user.api_key)
+
             return jsonify({"message": "Customer created", "api_key": user.api_key}), 200
         else:
             return jsonify({"error": "Customer already exists"}), 400
@@ -193,6 +188,8 @@ def protected_bot_action():
     return jsonify({
         "message": f"Hello {user.email}, your API key is valid. Bot action allowed."
     }), 200
+
+# -------------------- APP ENTRY --------------------
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
