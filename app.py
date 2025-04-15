@@ -14,11 +14,10 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 db.init_app(app)
 
-# Ensure tables are created
 with app.app_context():
     db.create_all()
 
-# -------------------- AUTH DECORATORS --------------------
+# -------------------- Decorators --------------------
 
 def login_required(f):
     @wraps(f)
@@ -34,16 +33,14 @@ def api_key_required(f):
         api_key = request.headers.get('X-API-Key')
         if not api_key:
             return jsonify({"error": "API key required"}), 401
-
         user = User.query.filter_by(api_key=api_key).first()
         if not user or not user.is_active:
             return jsonify({"error": "Invalid or inactive API key"}), 403
-
-        request.user = user  # Attach user to request context
+        request.user = user
         return f(*args, **kwargs)
     return decorated_function
 
-# -------------------- ROUTES --------------------
+# -------------------- Routes --------------------
 
 @app.route('/')
 def index():
@@ -55,7 +52,6 @@ def register():
         email = request.form['email']
         password = request.form['password']
         hashed_password = generate_password_hash(password, method='sha256')
-
         new_user = User(email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
@@ -68,7 +64,6 @@ def login():
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
-
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             return redirect(url_for('portal'))
@@ -88,23 +83,17 @@ def portal():
     user = User.query.get(session['user_id'])
 
     if request.method == 'POST':
-        mt5_login = request.form.get('mt5_login')
-        mt5_password = request.form.get('mt5_password')
-        broker_server = request.form.get('broker')
-        bot_configuration = request.form.get('bot_configuration')
-
-        api_key = secrets.token_hex(16)
-
-        user.mt5_login = mt5_login
-        user.mt5_password = mt5_password
-        user.broker = broker_server
-        user.bot_config = bot_configuration
-        user.api_key = api_key
+        user.mt5_login = request.form.get('mt5_login')
+        user.mt5_password = request.form.get('mt5_password')
+        user.broker = request.form.get('broker')
+        user.bot_config = request.form.get('bot_configuration')
+        user.api_key = secrets.token_hex(16)
         db.session.commit()
-
         return redirect(url_for('portal'))
 
     return render_template('home.html', user=user)
+
+# -------------------- Webhooks --------------------
 
 @app.route('/shopify-webhook', methods=['POST'])
 def shopify_webhook():
@@ -131,10 +120,6 @@ def shopify_webhook():
             )
             db.session.add(user)
             db.session.commit()
-
-            # Optional: Send welcome email here if not already wired
-            # send_welcome_email_with_pdf(user.email, user.api_key)
-
             return jsonify({"message": "Customer created", "api_key": user.api_key}), 200
         else:
             return jsonify({"error": "Customer already exists"}), 400
@@ -150,31 +135,18 @@ def shopify_webhook():
 
     return jsonify({"error": "Unknown event"}), 400
 
-@app.route('/api/get_api_key', methods=['GET'])
-def get_api_key():
-    email = request.args.get('email')
-    if not email:
-        return jsonify({"error": "Email is required"}), 400
-
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    return jsonify({"email": email, "api_key": user.api_key})
+# -------------------- Internal API --------------------
 
 @app.route('/api/validate_key', methods=['GET'])
 def validate_key():
     api_key = request.args.get('api_key')
     if not api_key:
         return jsonify({"valid": False, "error": "API key is required"}), 400
-
     user = User.query.filter_by(api_key=api_key).first()
     if not user:
         return jsonify({"valid": False, "error": "Invalid API key"}), 404
-
     if not user.is_active:
         return jsonify({"valid": False, "error": "Subscription inactive"}), 403
-
     return jsonify({
         "valid": True,
         "email": user.email,
@@ -188,8 +160,6 @@ def protected_bot_action():
     return jsonify({
         "message": f"Hello {user.email}, your API key is valid. Bot action allowed."
     }), 200
-
-# -------------------- APP ENTRY --------------------
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

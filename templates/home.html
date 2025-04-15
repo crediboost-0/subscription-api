@@ -9,42 +9,29 @@
 <body>
     <div class="container">
         <h1>Welcome to Octo MT5 Portal</h1>
-        <p>Welcome, {{ user.email }}! Here's where you can manage your MT5 credentials, choose your broker, and deploy your Octo trading bot.</p>
+        <p>Welcome, {{ user.email }}! Use the form below to connect your MT5 bot.</p>
         
-        <!-- Combined MT5 Setup Form -->
-        <h3>Enter Your MetaTrader 5 & Broker Details</h3>
         <form method="POST">
             <label for="mt5_login">MT5 Login:</label><br>
-            <input type="text" name="mt5_login" id="mt5_login" required><br><br>
-            
+            <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" required><br><br>
+
             <label for="mt5_password">MT5 Password:</label><br>
             <input type="password" name="mt5_password" id="mt5_password" required><br><br>
 
             <label for="broker">Broker Server Name:</label><br>
-            <input 
-                type="text" 
-                name="broker" 
-                id="broker" 
-                placeholder="e.g., ICMarketsSC-Live19" 
-                required><br>
-            <small>You can find this in your MetaTrader app under “Login to an Existing Account”.</small><br><br>
+            <input type="text" name="broker" id="broker" placeholder="e.g., ICMarketsSC-Live19" value="{{ user.broker or '' }}" required><br><br>
 
             <label for="bot_configuration">Bot Configuration:</label><br>
-            <input 
-                type="text" 
-                name="bot_configuration" 
-                id="bot_configuration" 
-                placeholder="e.g., RiskLow, StrategyB" 
-                required><br><br>
+            <input type="text" name="bot_configuration" id="bot_configuration" placeholder="e.g., StrategyA-RiskLow" value="{{ user.bot_config or '' }}" required><br><br>
 
-            <button type="submit">💾 Save & Deploy Bot</button>
+            <button type="submit">💾 Save & Generate API Key</button>
         </form>
 
-        <!-- API Key Display -->
         <h3>Your API Key</h3>
-        <p>Your API key is: <strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
+        <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
 
-        <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
     </div>
 </body>
 </html>
+
