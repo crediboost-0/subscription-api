@@ -66,7 +66,7 @@ def login():
 
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
-            return redirect(url_for('home'))
+            return redirect(url_for('portal'))  # Redirect to /portal after login
         else:
             return "Invalid credentials"
     return render_template('login.html')
@@ -77,7 +77,7 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])  # Legacy route, optional to keep
 @login_required
 def home():
     user = User.query.get(session['user_id'])
@@ -89,9 +89,31 @@ def home():
         user.api_key = api_key
         db.session.commit()
 
-        return redirect(url_for('home'))
+        return redirect(url_for('portal'))
 
-    return render_template('home.html')
+    return render_template('home.html', user=user)
+
+# ✅ NEW: Route for /portal (public-facing dashboard)
+@app.route('/portal', methods=['GET', 'POST'])
+@login_required
+def portal():
+    user = User.query.get(session['user_id'])
+
+    if request.method == 'POST':
+        bot_configuration = request.form['bot_configuration']
+        api_key = secrets.token_hex(16)
+
+        user.api_key = api_key
+        db.session.commit()
+
+        return redirect(url_for('portal'))
+
+    return render_template('home.html', user=user)
+
+# ✅ Optional: Redirect / to /portal
+@app.route('/')
+def index():
+    return redirect(url_for('portal'))
 
 @app.route('/shopify-webhook', methods=['POST'])
 def shopify_webhook():
@@ -164,7 +186,6 @@ def validate_key():
         "bot_allowed": True
     }), 200
 
-# ✅ Example protected endpoint
 @app.route('/api/protected-bot-action', methods=['POST'])
 @api_key_required
 def protected_bot_action():
