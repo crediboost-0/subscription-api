@@ -1,7 +1,7 @@
 ﻿from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 import os
 import secrets
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from models import db, User
 from functools import wraps
 
@@ -61,14 +61,13 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email')
         user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
+        if user:
             session['user_id'] = user.id
             return redirect(url_for('portal'))
         else:
-            return "Invalid credentials"
+            return "No account found for that email. Please subscribe first."
     return render_template('login.html')
 
 @app.route('/logout')
@@ -160,6 +159,8 @@ def protected_bot_action():
     return jsonify({
         "message": f"Hello {user.email}, your API key is valid. Bot action allowed."
     }), 200
+
+# -------------------- Entry Point --------------------
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
