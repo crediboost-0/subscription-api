@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crediboost MT5 Portal</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Favicon for branding -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
-<body>
-    <div class="container">
-        <h1> Welcome to the Crediboost MT5 Portal </h1>
+<body class="gradient-bg">
+    <div class="card">
+        <h1>Welcome to the Crediboost MT5 Portal</h1>
         <form id="credentialsForm">
+            <label for="server_name">Select Your Broker Server:</label>
             <select id="server_name" required>
                 <option value="" disabled selected>Select Your Broker Server</option>
                 <option value="Broker1">Broker1</option>
                 <option value="Broker2">Broker2</option>
                 <option value="Broker3">Broker3</option>
             </select>
-            <input type="text" id="mt5_login" placeholder="MT5 Login Number" required>
-            <input type="password" id="mt5_password" placeholder="Password" required>
-            <input type="text" id="api_key" placeholder="Your API Key" required>
+
+            <label for="mt5_login">MT5 Login Number:</label>
+            <input type="text" id="mt5_login" placeholder="Enter your MT5 login" required>
+
+            <label for="mt5_password">Password:</label>
+            <input type="password" id="mt5_password" placeholder="Enter your password" required>
+
+            <label for="api_key">Your API Key:</label>
+            <input type="text" id="api_key" placeholder="Enter your API key" required>
+
             <button type="submit">Submit</button>
         </form>
     </div>

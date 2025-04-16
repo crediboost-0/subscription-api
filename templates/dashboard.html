@@ -1,13 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Crediboost</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Favicon for branding -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
-<body>
-    <h2>Welcome, {{ email }}!</h2>
-    <p>Your API Key: <strong>{{ api_key }}</strong></p>
-    <a href="/logout">Logout</a>
+<body class="gradient-bg">
+    <div class="card">
+        <h2>Welcome, {{ email }}!</h2>
+        <p>Your API Key: <strong>{{ api_key }}</strong></p>
+        <a class="logout-link" href="/logout">🚪 Logout</a>
+    </div>
 </body>
 </html>
