@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Configurations
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "octo-super-secret-key-123")  # ✅ Fallback added
 
 db.init_app(app)
 
@@ -164,3 +164,4 @@ def protected_bot_action():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
