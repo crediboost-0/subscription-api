@@ -14,7 +14,7 @@
         <h1>🐙 Octo MT5 Portal</h1>
         <p>Hey {{ user.email }}, connect your MT5 bot below!</p>
 
-        <!-- Improved form styling and placeholders -->
+        <!-- Updated form styling and placeholders -->
         <form method="POST">
             <label for="mt5_login">MT5 Login:</label>
             <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" placeholder="Enter your MT5 login" required>
@@ -24,9 +24,6 @@
 
             <label for="broker">Broker Server Name:</label>
             <input type="text" name="broker" id="broker" placeholder="e.g., ICMarketsSC-Live19" value="{{ user.broker or '' }}" required>
-
-            <label for="bot_configuration">Bot Configuration:</label>
-            <input type="text" name="bot_configuration" id="bot_configuration" placeholder="e.g., StrategyA-RiskLow" value="{{ user.bot_config or '' }}" required>
 
             <button type="submit">💾 Save & Generate API Key</button>
         </form>
