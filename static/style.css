@@ -5,65 +5,33 @@ body, h1, form, input, select, button {
     box-sizing: border-box;
 }
 
-/* Apply the background color from crediboost.store */
+/* Apply a gradient background inspired by smrtalgo.com */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1a1a1a; /* Dark background color */
-    color: #f5f5f5; /* Light text color for contrast */
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #431c5d, #6e48aa);
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
 }
-body {
-    background: linear-gradient(45deg, #6a1b9a, #8e24aa);
-    color: white;
-    font-family: Arial, sans-serif;
-}
-
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-h1, h3 {
-    color: #fff;
-}
-
-input, select, button {
-    margin: 10px 0;
-    padding: 10px;
-    width: 100%;
-}
-
-button {
-    background-color: #6a1b9a;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #8e24aa;
-}
-
 
 /* Container styling */
 .container {
     width: 90%;
-    max-width: 400px;
-    background-color: #2c2c2c; /* Slightly lighter than the body */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    background-color: rgba(255, 255, 255, 0.1); /* Transparent overlay */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px); /* Subtle blur effect */
     text-align: center;
 }
 
 /* Header styling */
 h1 {
-    font-size: 1.8em;
+    font-size: 2rem;
     margin-bottom: 20px;
 }
 
@@ -76,123 +44,57 @@ form {
 
 /* Input and select styling */
 input, select {
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #444;
-    border-radius: 4px;
-    background-color: #3a3a3a;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent inputs */
     color: #f5f5f5;
-    font-size: 1em;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
 }
 
 /* Input and select focus state */
 input:focus, select:focus {
     outline: none;
-    border-color: #ff9800; /* Highlight color */
+    border-color: #7b32e3; /* Highlight color */
 }
 
 /* Button styling */
 button {
-    padding: 10px;
+    padding: 12px;
     border: none;
-    border-radius: 4px;
-    background-color: #ff9800; /* Accent color */
-    color: #1a1a1a;
-    font-size: 1em;
+    border-radius: 8px;
+    background-color: #7b32e3; /* Accent color */
+    color: white;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 /* Button hover state */
 button:hover {
-    background-color: #e68900;
-}
-body.gradient-bg {
-    background: linear-gradient(135deg, #431c5d, #6e48aa);
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.card {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 400px;
-    width: 100%;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    backdrop-filter: blur(10px);
-}
-
-h1 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-p {
-    font-size: 0.95rem;
-    text-align: center;
-}
-
-label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 10px;
-    border: none;
-    font-size: 1rem;
-}
-
-button {
-    margin-top: 20px;
-    width: 100%;
-    padding: 12px;
-    background-color: #7b32e3;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-button:hover {
     background-color: #4b1c96;
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
-.api-key-box {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    padding: 15px;
+/* Subtext styling */
+.subtext {
+    font-size: 0.85rem;
     margin-top: 20px;
-    text-align: center;
+    color: #ccc;
 }
 
+/* Logout link */
 .logout-link {
     display: block;
     text-align: center;
     color: #eee;
     margin-top: 15px;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .logout-link:hover {
+    color: #fff; /* Brighter hover effect */
     text-decoration: underline;
-}
-
-.subtext {
-    font-size: 0.85rem;
-    margin-top: 15px;
-    text-align: center;
-    color: #ccc;
 }

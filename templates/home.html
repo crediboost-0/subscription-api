@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Octo MT5 Portal</title>
+    <!-- Link external stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Favicon for branding -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body class="gradient-bg">
     <div class="card">
         <h1>🐙 Octo MT5 Portal</h1>
         <p>Hey {{ user.email }}, connect your MT5 bot below!</p>
 
+        <!-- Improved form styling and placeholders -->
         <form method="POST">
             <label for="mt5_login">MT5 Login:</label>
-            <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" required>
+            <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" placeholder="Enter your MT5 login" required>
 
             <label for="mt5_password">MT5 Password:</label>
-            <input type="password" name="mt5_password" id="mt5_password" required>
+            <input type="password" name="mt5_password" id="mt5_password" placeholder="Enter your password" required>
 
             <label for="broker">Broker Server Name:</label>
             <input type="text" name="broker" id="broker" placeholder="e.g., ICMarketsSC-Live19" value="{{ user.broker or '' }}" required>
@@ -27,11 +31,13 @@
             <button type="submit">💾 Save & Generate API Key</button>
         </form>
 
+        <!-- API key box for user information -->
         <div class="api-key-box">
             <h3>🔑 Your API Key</h3>
             <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
         </div>
 
+        <!-- Logout link for easy navigation -->
         <a class="logout-link" href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
 </body>

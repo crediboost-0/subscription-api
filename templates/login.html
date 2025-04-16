@@ -4,20 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Octo</title>
+    <!-- Link to external stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Add favicon for branding -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body class="gradient-bg">
     <div class="card">
         <h1>🐙 Welcome to Octo</h1>
         <p>Enter your Shopify email to access your trading dashboard.</p>
 
+        <!-- Enhanced form with action and input attributes -->
         <form action="{{ url_for('login') }}" method="POST">
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required>
             <button type="submit">🔓 Access Portal</button>
         </form>
 
-        <p class="subtext">Don’t have an account? You’ll be automatically added when you subscribe on Shopify.</p>
+        <!-- Subtext for account creation clarification -->
+        <p class="subtext">
+            Don’t have an account? You’ll be automatically added when you subscribe on Shopify.
+        </p>
     </div>
 </body>
 </html>
