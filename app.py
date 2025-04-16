@@ -89,7 +89,6 @@ def portal():
         user.mt5_login = request.form.get('mt5_login')
         user.mt5_password = request.form.get('mt5_password')
         user.broker = request.form.get('broker')
-        user.bot_config = request.form.get('bot_configuration')
         user.api_key = secrets.token_hex(16)
         db.session.commit()
         return redirect(url_for('portal'))
