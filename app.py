@@ -12,6 +12,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "octo-super-secret-key-123")  # ✅ Fallback added
 
+# Enable template auto-reloading
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
+
 db.init_app(app)
 
 with app.app_context():
@@ -164,4 +168,3 @@ def protected_bot_action():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
