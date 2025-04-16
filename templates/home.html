@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html> 
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,32 +6,33 @@
     <title>Octo MT5 Portal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome to Octo MT5 Portal</h1>
-        <p>Welcome, {{ user.email }}! Use the form below to connect your MT5 bot.</p>
-        
+<body class="gradient-bg">
+    <div class="card">
+        <h1>🐙 Octo MT5 Portal</h1>
+        <p>Hey {{ user.email }}, connect your MT5 bot below!</p>
+
         <form method="POST">
-            <label for="mt5_login">MT5 Login:</label><br>
-            <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" required><br><br>
+            <label for="mt5_login">MT5 Login:</label>
+            <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" required>
 
-            <label for="mt5_password">MT5 Password:</label><br>
-            <input type="password" name="mt5_password" id="mt5_password" required><br><br>
+            <label for="mt5_password">MT5 Password:</label>
+            <input type="password" name="mt5_password" id="mt5_password" required>
 
-            <label for="broker">Broker Server Name:</label><br>
-            <input type="text" name="broker" id="broker" placeholder="e.g., ICMarketsSC-Live19" value="{{ user.broker or '' }}" required><br><br>
+            <label for="broker">Broker Server Name:</label>
+            <input type="text" name="broker" id="broker" placeholder="e.g., ICMarketsSC-Live19" value="{{ user.broker or '' }}" required>
 
-            <label for="bot_configuration">Bot Configuration:</label><br>
-            <input type="text" name="bot_configuration" id="bot_configuration" placeholder="e.g., StrategyA-RiskLow" value="{{ user.bot_config or '' }}" required><br><br>
+            <label for="bot_configuration">Bot Configuration:</label>
+            <input type="text" name="bot_configuration" id="bot_configuration" placeholder="e.g., StrategyA-RiskLow" value="{{ user.bot_config or '' }}" required>
 
             <button type="submit">💾 Save & Generate API Key</button>
         </form>
 
-        <h3>Your API Key</h3>
-        <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
+        <div class="api-key-box">
+            <h3>🔑 Your API Key</h3>
+            <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
+        </div>
 
-        <a href="{{ url_for('logout') }}">Logout</a>
+        <a class="logout-link" href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
 </body>
 </html>
-
