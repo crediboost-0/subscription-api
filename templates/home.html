@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Octo MT5 Portal</title>
-    <!-- Link external stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Favicon for branding -->
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body class="gradient-bg">
@@ -14,7 +12,6 @@
         <h1>🐙 Octo MT5 Portal</h1>
         <p>Hey {{ user.email }}, connect your MT5 bot below!</p>
 
-        <!-- Updated form styling and placeholders -->
         <form method="POST">
             <label for="mt5_login">MT5 Login:</label>
             <input type="text" name="mt5_login" id="mt5_login" value="{{ user.mt5_login or '' }}" placeholder="Enter your MT5 login" required>
@@ -25,16 +22,28 @@
             <label for="broker">Broker Server Name:</label>
             <input type="text" name="broker" id="broker" placeholder="e.g., ICMarketsSC-Live19" value="{{ user.broker or '' }}" required>
 
-            <button type="submit">💾 Save & Generate API Key</button>
+            <button type="submit">🚀 Save & Deploy Bot</button>
         </form>
 
-        <!-- API key box for user information -->
         <div class="api-key-box">
             <h3>🔑 Your API Key</h3>
             <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
         </div>
 
-        <!-- Logout link for easy navigation -->
+        <!-- New Section: Recommended Currency Pairs -->
+        <div class="currency-suggestion-box" style="margin-top: 40px; padding: 25px; background-color: #ffffff10; border-radius: 10px; text-align: center;">
+            <h3 style="color: #fff; margin-bottom: 15px;">🔥 Best Pairs for Trend-Following Strategy</h3>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">EUR/USD</div>
+                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">GBP/USD</div>
+                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">USD/JPY</div>
+                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">AUD/USD</div>
+                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">USD/CHF</div>
+                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">NZD/USD</div>
+            </div>
+            <p style="color: #ccc; font-size: 14px; margin-top: 20px;">These pairs tend to show strong and clean trends — perfect for Octo’s strategy 🧠📈</p>
+        </div>
+
         <a class="logout-link" href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
 </body>
