@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #282c34 100%);
+        }
         .currency-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -29,10 +35,18 @@
             border-radius: 12px;
             text-align: center;
         }
+        .card {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
-<body class="gradient-bg">
-    <div class="card" style="max-width: 700px; margin: 40px auto;">
+<body>
+    <div class="card">
         <h1 style="text-align: center;">🐙 Octo MT5 Portal</h1>
         <p style="text-align: center;">Hey {{ user.email }}, connect your MT5 bot below!</p>
 
@@ -71,4 +85,3 @@
     </div>
 </body>
 </html>
-
