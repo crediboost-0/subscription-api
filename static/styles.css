@@ -1,4 +1,4 @@
-/* Reset some default browser styles */
+﻿/* Reset some default browser styles */
 body, h1, form, input, select, button {
     margin: 0;
     padding: 0;
@@ -10,23 +10,26 @@ body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #431c5d, #6e48aa);
     color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-y: auto; /* ✅ allow scrolling */
     display: flex;
     justify-content: center;
-    min-height: 100vh;
-    padding-top: 40px;
+    align-items: flex-start; /* ✅ Start content from the top */
+    padding-top: 60px; /* ✅ More top spacing to avoid cutoff */
     padding-bottom: 40px;
-    margin: 0;
 }
 
 /* Container styling */
 .container, .card {
     width: 90%;
     max-width: 480px;
-    background-color: rgba(255, 255, 255, 0.1); /* Transparent overlay */
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px); /* Subtle blur effect */
+    backdrop-filter: blur(10px);
     text-align: center;
 }
 
@@ -48,7 +51,7 @@ input, select {
     padding: 12px;
     border: 1px solid #444;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent inputs */
+    background-color: rgba(255, 255, 255, 0.1);
     color: #f5f5f5;
     font-size: 1rem;
     transition: border-color 0.3s ease;
@@ -57,7 +60,7 @@ input, select {
 /* Input and select focus state */
 input:focus, select:focus {
     outline: none;
-    border-color: #7b32e3; /* Highlight color */
+    border-color: #7b32e3;
 }
 
 /* Button styling */
@@ -65,7 +68,7 @@ button {
     padding: 12px;
     border: none;
     border-radius: 8px;
-    background-color: #7b32e3; /* Accent color */
+    background-color: #7b32e3;
     color: white;
     font-size: 1rem;
     cursor: pointer;
@@ -75,7 +78,7 @@ button {
 /* Button hover state */
 button:hover {
     background-color: #4b1c96;
-    transform: scale(1.05); /* Slight zoom effect */
+    transform: scale(1.05);
 }
 
 /* Currency section styling */
@@ -121,6 +124,6 @@ button:hover {
 }
 
 .logout-link:hover {
-    color: #fff; /* Brighter hover effect */
+    color: #fff;
     text-decoration: underline;
 }
