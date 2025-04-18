@@ -10,26 +10,22 @@ body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #431c5d, #6e48aa);
     color: white;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    overflow-y: auto; /* ✅ allow scrolling */
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* ✅ Start content from the top */
-    padding-top: 60px; /* ✅ More top spacing to avoid cutoff */
-    padding-bottom: 40px;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
 /* Container styling */
-.container, .card {
+.container {
     width: 90%;
-    max-width: 480px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 30px;
+    max-width: 450px;
+    background-color: rgba(255, 255, 255, 0.1); /* Transparent overlay */
+    padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Subtle blur effect */
     text-align: center;
 }
 
@@ -51,7 +47,7 @@ input, select {
     padding: 12px;
     border: 1px solid #444;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent inputs */
     color: #f5f5f5;
     font-size: 1rem;
     transition: border-color 0.3s ease;
@@ -60,7 +56,7 @@ input, select {
 /* Input and select focus state */
 input:focus, select:focus {
     outline: none;
-    border-color: #7b32e3;
+    border-color: #7b32e3; /* Highlight color */
 }
 
 /* Button styling */
@@ -68,7 +64,7 @@ button {
     padding: 12px;
     border: none;
     border-radius: 8px;
-    background-color: #7b32e3;
+    background-color: #7b32e3; /* Accent color */
     color: white;
     font-size: 1rem;
     cursor: pointer;
@@ -78,32 +74,7 @@ button {
 /* Button hover state */
 button:hover {
     background-color: #4b1c96;
-    transform: scale(1.05);
-}
-
-/* Currency section styling */
-.currency-section {
-    margin-top: 25px;
-}
-
-/* Currency buttons */
-.currency-button {
-    background-color: #392d73;
-    border: none;
-    color: white;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: default;
-}
-
-/* Wrap currency buttons nicely */
-.currency-section div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
 /* Subtext styling */
@@ -124,6 +95,6 @@ button:hover {
 }
 
 .logout-link:hover {
-    color: #fff;
+    color: #fff; /* Brighter hover effect */
     text-decoration: underline;
 }
