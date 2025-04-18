@@ -13,7 +13,7 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    display: block; /* ✅ no more flex issues */
+    display: block;
     overflow-x: hidden;
 }
 
@@ -21,7 +21,7 @@ body {
 .container, .card {
     max-width: 480px;
     width: 90%;
-    margin: 60px auto 40px auto; /* ✅ push down content */
+    margin: 80px auto 60px auto; /* ⬅️ Increased top margin from 60px to 80px */
     background-color: rgba(255, 255, 255, 0.1);
     padding: 30px;
     border-radius: 12px;
