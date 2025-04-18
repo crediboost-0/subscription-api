@@ -12,17 +12,18 @@ body {
     color: white;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding-top: 40px;
+    padding-bottom: 40px;
     margin: 0;
 }
 
 /* Container styling */
-.container {
+.container, .card {
     width: 90%;
-    max-width: 450px;
+    max-width: 480px;
     background-color: rgba(255, 255, 255, 0.1); /* Transparent overlay */
-    padding: 25px;
+    padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px); /* Subtle blur effect */
@@ -75,6 +76,31 @@ button {
 button:hover {
     background-color: #4b1c96;
     transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Currency section styling */
+.currency-section {
+    margin-top: 25px;
+}
+
+/* Currency buttons */
+.currency-button {
+    background-color: #392d73;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: default;
+}
+
+/* Wrap currency buttons nicely */
+.currency-section div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
 }
 
 /* Subtext styling */
