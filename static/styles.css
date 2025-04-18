@@ -1,62 +1,62 @@
-﻿/* Reset some default browser styles */
+﻿/* Reset default styles */
 body, h1, form, input, select, button {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Apply a gradient background inspired by smrtalgo.com */
+/* Proper layout handling */
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #431c5d, #6e48aa);
     color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 0;
+    display: block; /* ✅ no more flex issues */
+    overflow-x: hidden;
 }
 
-/* Container styling */
-.container {
+/* Main container */
+.container, .card {
+    max-width: 480px;
     width: 90%;
-    max-width: 450px;
-    background-color: rgba(255, 255, 255, 0.1); /* Transparent overlay */
-    padding: 25px;
+    margin: 60px auto 40px auto; /* ✅ push down content */
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px); /* Subtle blur effect */
+    backdrop-filter: blur(10px);
     text-align: center;
 }
 
-/* Header styling */
+/* Heading */
 h1 {
     font-size: 2rem;
     margin-bottom: 20px;
 }
 
-/* Form element styling */
+/* Form layout */
 form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Input and select styling */
+/* Inputs */
 input, select {
     padding: 12px;
     border: 1px solid #444;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent inputs */
+    background-color: rgba(255, 255, 255, 0.1);
     color: #f5f5f5;
     font-size: 1rem;
     transition: border-color 0.3s ease;
 }
 
-/* Input and select focus state */
 input:focus, select:focus {
     outline: none;
-    border-color: #7b32e3; /* Highlight color */
+    border-color: #7b32e3;
 }
 
 /* Button styling */
@@ -64,27 +64,49 @@ button {
     padding: 12px;
     border: none;
     border-radius: 8px;
-    background-color: #7b32e3; /* Accent color */
+    background-color: #7b32e3;
     color: white;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Button hover state */
 button:hover {
     background-color: #4b1c96;
-    transform: scale(1.05); /* Slight zoom effect */
+    transform: scale(1.05);
 }
 
-/* Subtext styling */
+/* Currency layout */
+.currency-section {
+    margin-top: 25px;
+}
+
+.currency-button {
+    background-color: #392d73;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: default;
+}
+
+.currency-section div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Subtext */
 .subtext {
     font-size: 0.85rem;
     margin-top: 20px;
     color: #ccc;
 }
 
-/* Logout link */
+/* Logout */
 .logout-link {
     display: block;
     text-align: center;
@@ -95,6 +117,6 @@ button:hover {
 }
 
 .logout-link:hover {
-    color: #fff; /* Brighter hover effect */
+    color: #fff;
     text-decoration: underline;
 }

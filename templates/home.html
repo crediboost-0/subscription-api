@@ -1,6 +1,15 @@
-﻿<body class="gradient-bg" style="margin: 0; padding: 0;">
-    <div class="card" style="margin-top: 40px; max-width: 480px; width: 90%; padding: 30px; box-sizing: border-box;">
-        <h1 style="margin-top: 0;">🐙 Octo MT5 Portal</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Octo MT5 Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="gradient-bg">
+
+    <div class="card">
+        <h1>🐙 Octo MT5 Portal</h1>
         <p>Hey {{ user.email }}, connect your MT5 bot below!</p>
 
         <form method="POST">
@@ -21,9 +30,9 @@
             <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
         </div>
 
-        <div class="currency-section" style="margin-top: 25px;">
+        <div class="currency-section">
             <h3>🔥 Best Currency Pairs for Trend-Following Bots</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+            <div class="currency-grid">
                 <button class="currency-button">EUR/USD</button>
                 <button class="currency-button">GBP/USD</button>
                 <button class="currency-button">USD/JPY</button>
@@ -35,4 +44,6 @@
 
         <a class="logout-link" href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
+
 </body>
+</html>
