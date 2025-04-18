@@ -6,11 +6,35 @@
     <title>Octo MT5 Portal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .currency-item {
+            background-color: #2d2d6a;
+            color: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
+        }
+        .currency-suggestion-box {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body class="gradient-bg">
-    <div class="card">
-        <h1>🐙 Octo MT5 Portal</h1>
-        <p>Hey {{ user.email }}, connect your MT5 bot below!</p>
+    <div class="card" style="max-width: 700px; margin: 40px auto;">
+        <h1 style="text-align: center;">🐙 Octo MT5 Portal</h1>
+        <p style="text-align: center;">Hey {{ user.email }}, connect your MT5 bot below!</p>
 
         <form method="POST">
             <label for="mt5_login">MT5 Login:</label>
@@ -30,21 +54,21 @@
             <p><strong>{{ user.api_key if user.api_key else "Not generated yet" }}</strong></p>
         </div>
 
-        <!-- New Section: Recommended Currency Pairs -->
-        <div class="currency-suggestion-box" style="margin-top: 40px; padding: 25px; background-color: #ffffff10; border-radius: 10px; text-align: center;">
-            <h3 style="color: #fff; margin-bottom: 15px;">🔥 Best Pairs for Trend-Following Strategy</h3>
-            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">EUR/USD</div>
-                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">GBP/USD</div>
-                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">USD/JPY</div>
-                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">AUD/USD</div>
-                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">USD/CHF</div>
-                <div style="padding: 15px 20px; background-color: #2d2d6a; color: white; border-radius: 8px; min-width: 150px;">NZD/USD</div>
+        <div class="currency-suggestion-box">
+            <h3 style="color: #fff; margin-bottom: 20px; font-size: 20px;">🔥 Best Currency Pairs for Trend-Following Bots</h3>
+            <div class="currency-grid">
+                <div class="currency-item">EUR/USD</div>
+                <div class="currency-item">GBP/USD</div>
+                <div class="currency-item">USD/JPY</div>
+                <div class="currency-item">AUD/USD</div>
+                <div class="currency-item">USD/CHF</div>
+                <div class="currency-item">NZD/USD</div>
             </div>
-            <p style="color: #ccc; font-size: 14px; margin-top: 20px;">These pairs tend to show strong and clean trends — perfect for Octo’s strategy 🧠📈</p>
+            <p style="color: #ccc; font-size: 14px; margin-top: 25px;">These major pairs are known for strong, reliable trends — ideal for Octo’s strategy 📊</p>
         </div>
 
         <a class="logout-link" href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
 </body>
 </html>
+
